@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console Debug - MCP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        h1 { font-size: 2.8em; margin-bottom: 10px; }
+        .subtitle { font-size: 1.2em; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px;
+        }
+        h2 { color: #667eea; margin-bottom: 25px; }
+        .info-box {
+            background: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            color: #2e7d32;
+        }
+        .description {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 1.05em;
+        }
+        .execute-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .execute-btn:hover {
+            background: #764ba2;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        }
+        .test-section {
+            margin-top: 25px;
+            padding: 25px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border: 3px dashed #ffc107;
+        }
+        .test-section h3 {
+            color: #f57c00;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        .test-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .test-btn:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+        }
+        .output-area {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 10px;
+            padding: 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            border: 3px solid #667eea;
+        }
+        .log-line {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+            line-height: 1.6;
+        }
+        .log-time { color: #858585; font-weight: bold; }
+        .log-action { color: #4ec9b0; font-weight: bold; }
+        .log-success { color: #4caf50; }
+        .log-error { color: #f44336; font-weight: bold; }
+        .log-warning { color: #ff9800; }
+        .log-info { color: #90caf9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Console Debug Workflow</h1>
+            <p class="subtitle">Captura e análise de mensagens do console JavaScript</p>
+        </header>
+
+        <div class="card">
+            <h2>📋 Sobre este Workflow</h2>
+            <div class="info-box">
+                ✓ Este workflow usa <strong>read_console_messages</strong> do MCP Real
+            </div>
+            <div class="description">
+                <strong>O que este workflow faz:</strong><br><br>
+                • Captura todas as mensagens do console da página<br>
+                • Identifica erros JavaScript (ReferenceError, TypeError, etc)<br>
+                • Mostra warnings e logs importantes<br>
+                • Filtra mensagens por padrões regex<br>
+                • Perfeito para debug e análise de problemas
+            </div>
+
+            <button class="execute-btn" onclick="requestConsoleDebug()">
+                🚀 Executar Console Debug via MCP
+            </button>
+
+            <div class="test-section">
+                <h3>🧪 Gerar Erros de Teste</h3>
+                <p style="margin-bottom: 20px; color: #666;">
+                    Clique nos botões abaixo para gerar diferentes tipos de mensagens no console:
+                </p>
+                <button class="test-btn" onclick="causeReferenceError()">
+                    ❌ Reference Error
+                </button>
+                <button class="test-btn" onclick="causeTypeError()">
+                    ❌ Type Error
+                </button>
+                <button class="test-btn" onclick="causeWarning()">
+                    ⚠️ Console Warning
+                </button>
+                <button class="test-btn" onclick="console.log('✓ Teste de log simples')">
+                    ℹ️ Console Log
+                </button>
+                <button class="test-btn" onclick="console.info('ℹ️ Informação importante')">
+                    💡 Console Info
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚙️ Output do Workflow</h2>
+            <div class="output-area" id="outputArea">
+                <div class="log-line">
+                    <span class="log-time">[Sistema]</span>
+                    <span class="log-info"> 🎯 Console Debug pronto para executar</span>
+                </div>
+                <div class="log-line">
+                    <span class="log-info">💡 Gere alguns erros primeiro, depois clique em "Executar Console Debug"</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addLocalLog(action, info = '', type = 'info') {
+            const output = document.getElementById('outputArea');
+            const time = new Date().toLocaleTimeString('pt-BR');
+            const line = document.createElement('div');
+            line.className = 'log-line';
+
+            let logClass = 'log-info';
+            if (type === 'success') logClass = 'log-success';
+            if (type === 'error') logClass = 'log-error';
+            if (type === 'warning') logClass = 'log-warning';
+
+            line.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <span class="log-action">${action}</span>
+                ${info ? ` <span class="${logClass}">${info}</span>` : ''}
+            `;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function causeReferenceError() {
+            try {
+                variavelInexistente.metodo();
+            } catch (e) {
+                console.error('❌ ReferenceError:', e.message);
+                addLocalLog('Erro gerado', `ReferenceError: ${e.message}`, 'error');
+            }
+        }
+
+        function causeTypeError() {
+            try {
+                let obj = null;
+                obj.metodoInvalido();
+            } catch (e) {
+                console.error('❌ TypeError:', e.message);
+                addLocalLog('Erro gerado', `TypeError: ${e.message}`, 'error');
+            }
+        }
+
+        function causeWarning() {
+            console.warn('⚠️ Este é um warning de teste');
+            addLocalLog('Warning gerado', 'Console warning criado', 'warning');
+        }
+
+        function requestConsoleDebug() {
+            addLocalLog('🔍 Console Debug', 'Solicitando read_console_messages...', 'info');
+            addLocalLog('⏳ Aguardando', 'Claude Code vai executar o workflow', 'info');
+            console.log('%c🎯 CONSOLE_DEBUG_REQUEST: Claude, execute read_console_messages nesta tab!',
+                'background: #667eea; color: white; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-size: 14px;');
+        }
+
+        window.addEventListener('load', () => {
+            console.log('✓ Console Debug Workflow inicializado');
+            addLocalLog('✓ Sistema iniciado', 'Workflow pronto para uso', 'success');
+        });
+
+        window.addEventListener('error', (e) => {
+            console.error('💥 Erro não tratado:', e.message);
+        });
+    </script>
+</body>
+</html>
