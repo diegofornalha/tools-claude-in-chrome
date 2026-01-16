@@ -60,6 +60,35 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
         }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .button-group .execute-btn,
+        .button-group .clear-btn {
+            flex: 1;
+            width: auto;
+            margin-bottom: 0;
+        }
+        .clear-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .clear-btn:hover {
+            background: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.5);
+        }
         .test-section {
             margin-top: 25px;
             padding: 25px;
@@ -136,9 +165,14 @@
                 • Perfeito para debug e análise de problemas
             </div>
 
-            <button class="execute-btn" onclick="requestConsoleDebug()">
-                🚀 Executar Console Debug via MCP
-            </button>
+            <div class="button-group">
+                <button class="execute-btn" onclick="requestConsoleDebug()">
+                    🚀 Executar Console Debug via MCP
+                </button>
+                <button class="clear-btn" onclick="clearOutput()">
+                    🧹 Limpar Output
+                </button>
+            </div>
 
             <div class="test-section">
                 <h3>🧪 Gerar Erros de Teste</h3>
@@ -196,6 +230,12 @@
             `;
             output.appendChild(line);
             output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            const output = document.getElementById('outputArea');
+            output.innerHTML = '';
+            addLocalLog('🧹 Output limpo', 'Área de resultados limpa', 'info');
         }
 
         function causeReferenceError() {

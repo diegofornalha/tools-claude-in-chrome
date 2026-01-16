@@ -125,6 +125,41 @@
             transform: scale(0.98);
         }
 
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .button-group .execute-btn,
+        .button-group .clear-btn {
+            flex: 1;
+            width: auto;
+        }
+
+        .clear-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .clear-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+
+        .clear-btn:active {
+            transform: scale(0.98);
+        }
+
         .output-area {
             background: #1e1e1e;
             color: #d4d4d4;
@@ -250,9 +285,14 @@
                         • Mostra warnings e logs<br>
                         • Tool: <code>read_console_messages</code>
                     </div>
-                    <button class="execute-btn" onclick="requestConsoleDebug()">
-                        🚀 Executar Console Debug
-                    </button>
+                    <div class="button-group">
+                        <button class="execute-btn" onclick="requestConsoleDebug()">
+                            🚀 Executar Console Debug
+                        </button>
+                        <button class="clear-btn" onclick="clearOutput()">
+                            🧹 Limpar Output
+                        </button>
+                    </div>
 
                     <div class="test-section">
                         <h3>🧪 Gerar Erros de Teste</h3>
@@ -280,9 +320,14 @@
                         • Captura chamadas de API<br>
                         • Tool: <code>read_network_requests</code>
                     </div>
-                    <button class="execute-btn" onclick="requestNetworkMonitor()">
-                        📡 Executar Network Monitor
-                    </button>
+                    <div class="button-group">
+                        <button class="execute-btn" onclick="requestNetworkMonitor()">
+                            📡 Executar Network Monitor
+                        </button>
+                        <button class="clear-btn" onclick="clearOutput()">
+                            🧹 Limpar Output
+                        </button>
+                    </div>
 
                     <div class="test-section">
                         <h3>🧪 Gerar Requisições de Teste</h3>
@@ -312,9 +357,14 @@
                         <textarea id="jsInput" class="js-input" rows="3" placeholder="Digite código JavaScript aqui...
 Ex: document.title
 Ex: window.location.href">document.title</textarea>
-                        <button class="execute-btn" onclick="requestJavaScriptExecute()">
-                            💻 Executar JavaScript
-                        </button>
+                        <div class="button-group">
+                            <button class="execute-btn" onclick="requestJavaScriptExecute()">
+                                💻 Executar JavaScript
+                            </button>
+                            <button class="clear-btn" onclick="clearOutput()">
+                                🧹 Limpar Output
+                            </button>
+                        </div>
                     </div>
 
                     <div class="test-section">
@@ -392,6 +442,12 @@ Ex: window.location.href">document.title</textarea>
             `;
             output.appendChild(line);
             output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            const output = document.getElementById('outputArea');
+            output.innerHTML = '';
+            addLocalLog('🧹 Output limpo', 'Área de resultados limpa', 'info');
         }
 
         // ========== WORKFLOW 1: CONSOLE DEBUG ==========
