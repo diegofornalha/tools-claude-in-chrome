@@ -160,6 +160,36 @@
             transform: scale(0.98);
         }
 
+        .progress-container {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            border: 2px dashed #667eea;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        .progress-text {
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 5px;
+        }
+
         .output-area {
             background: #1e1e1e;
             color: #d4d4d4;
@@ -389,6 +419,14 @@ Ex: window.location.href">document.title</textarea>
             <div class="panel">
                 <h2>⚙️ Execução e Resultados</h2>
 
+                <div class="progress-container" id="progressContainer">
+                    <div style="font-weight: bold; color: #667eea; margin-bottom: 10px;">⏳ Aguardando Claude Code...</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0% - Iniciando workflow...</div>
+                </div>
+
                 <div class="warning-box">
                     <strong>Como funciona:</strong><br>
                     1. Clique em qualquer botão "Executar..."<br>
@@ -477,9 +515,73 @@ Ex: window.location.href">document.title</textarea>
         }
 
         function requestConsoleDebug() {
-            addLocalLog('🔍 Console Debug', 'Solicitando read_console_messages...', 'info');
-            console.log('%c🎯 CONSOLE_DEBUG_REQUEST: Claude, execute read_console_messages!',
-                'background: #667eea; color: white; padding: 5px 10px; border-radius: 3px; font-weight: bold;');
+            // Mostrar indicador de progresso
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+
+            progressContainer.style.display = 'block';
+
+            addLocalLog('🔍 Console Debug', 'Comando gerado!', 'info');
+
+            // Simular progresso
+            let progress = 0;
+            const messages = [
+                '10% - Gerando comando...',
+                '25% - Comando pronto!',
+                '50% - Copie o comando',
+                '75% - Execute no Claude Code',
+                '90% - Aguarde resultado',
+                '100% - Pronto!'
+            ];
+
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress > 95) progress = 95;
+
+                const percent = Math.min(Math.floor(progress), 95);
+                const messageIndex = Math.floor(percent / 20);
+
+                progressFill.style.width = percent + '%';
+                progressText.textContent = messages[messageIndex] || 'Gerando...';
+
+                if (percent >= 95) {
+                    clearInterval(progressInterval);
+                }
+            }, 500);
+
+            console.log('%c🎯 COMANDO GERADO:', 'background: #667eea; color: white; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-size: 14px;');
+            console.log('%cread_console_messages tabId=TAB_ID', 'background: #f0f0f0; color: #333; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px;');
+
+            setTimeout(() => {
+                progressFill.style.width = '100%';
+                progressText.textContent = '100% - Comando pronto! Copie do console ou output';
+                progressText.style.color = '#27ae60';
+
+                showGeneratedCommand('read_console_messages tabId=TAB_ID');
+            }, 2000);
+        }
+
+        function showGeneratedCommand(command) {
+            const output = document.getElementById('outputArea');
+            const commandDiv = document.createElement('div');
+            commandDiv.style.cssText = `
+                background: #2c3e50;
+                color: #ecf0f1;
+                padding: 15px;
+                margin: 10px 0;
+                border-radius: 5px;
+                border-left: 4px solid #3498db;
+                font-family: monospace;
+                word-break: break-all;
+            `;
+            commandDiv.innerHTML = `
+                <strong>📋 Comando Gerado:</strong><br>
+                <code style="background: #34495e; padding: 5px 8px; border-radius: 3px; color: #2ecc71;">${command}</code><br><br>
+                <small>💡 Copie e cole no Claude Code para executar!</small>
+            `;
+            output.appendChild(commandDiv);
+            output.scrollTop = output.scrollHeight;
         }
 
         // ========== WORKFLOW 2: NETWORK MONITOR ==========
@@ -524,9 +626,53 @@ Ex: window.location.href">document.title</textarea>
         }
 
         function requestNetworkMonitor() {
+            // Mostrar indicador de progresso
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+
+            progressContainer.style.display = 'block';
+
             addLocalLog('📡 Network Monitor', 'Solicitando read_network_requests...', 'info');
+
+            // Simular progresso
+            let progress = 0;
+            const messages = [
+                '10% - Conectando com Claude Code...',
+                '25% - Aguardando resposta...',
+                '50% - Monitorando rede...',
+                '75% - Coletando requisições...',
+                '90% - Finalizando...',
+                '100% - Concluído!'
+            ];
+
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+
+                const percent = Math.min(Math.floor(progress), 90);
+                progressFill.style.width = percent + '%';
+                progressText.textContent = messages[Math.floor(percent / 15)] || 'Aguardando...';
+
+                if (percent >= 90) {
+                    clearInterval(progressInterval);
+                }
+            }, 800);
+
             console.log('%c🎯 NETWORK_MONITOR_REQUEST: Claude, execute read_network_requests!',
                 'background: #667eea; color: white; padding: 5px 10px; border-radius: 3px; font-weight: bold;');
+
+            // Timeout
+            setTimeout(() => {
+                if (progress < 100) {
+                    progressFill.style.width = '100%';
+                    progressText.textContent = '100% - Timeout! Execute manualmente no Claude Code';
+                    progressText.style.color = '#f57c00';
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                    }, 5000);
+                }
+            }, 30000);
         }
 
         // ========== WORKFLOW 3: JAVASCRIPT EXECUTOR ==========
@@ -543,9 +689,53 @@ Ex: window.location.href">document.title</textarea>
                 return;
             }
 
+            // Mostrar indicador de progresso
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+
+            progressContainer.style.display = 'block';
+
             addLocalLog('💻 JavaScript Executor', `Solicitando execução: ${code}`, 'info');
+
+            // Simular progresso
+            let progress = 0;
+            const messages = [
+                '10% - Conectando com Claude Code...',
+                '25% - Aguardando resposta...',
+                '50% - Executando JavaScript...',
+                '75% - Processando resultado...',
+                '90% - Finalizando...',
+                '100% - Concluído!'
+            ];
+
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+
+                const percent = Math.min(Math.floor(progress), 90);
+                progressFill.style.width = percent + '%';
+                progressText.textContent = messages[Math.floor(percent / 15)] || 'Aguardando...';
+
+                if (percent >= 90) {
+                    clearInterval(progressInterval);
+                }
+            }, 800);
+
             console.log(`%c🎯 JS_EXECUTE_REQUEST: Claude, execute javascript_tool com código: ${code}`,
                 'background: #667eea; color: white; padding: 5px 10px; border-radius: 3px; font-weight: bold;');
+
+            // Timeout
+            setTimeout(() => {
+                if (progress < 100) {
+                    progressFill.style.width = '100%';
+                    progressText.textContent = '100% - Timeout! Execute manualmente no Claude Code';
+                    progressText.style.color = '#f57c00';
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                    }, 5000);
+                }
+            }, 30000);
         }
 
         // ========== INICIALIZAÇÃO ==========

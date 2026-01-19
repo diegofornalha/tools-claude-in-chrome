@@ -89,6 +89,35 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(231, 76, 60, 0.5);
         }
+        .progress-container {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(30, 136, 229, 0.1);
+            border-radius: 8px;
+            border: 2px dashed #1e88e5;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e88e5, #42a5f5);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        .progress-text {
+            text-align: center;
+            font-weight: bold;
+            color: #1e88e5;
+            margin-top: 5px;
+        }
         .test-section {
             margin-top: 25px;
             padding: 25px;
@@ -196,6 +225,13 @@
 
         <div class="card">
             <h2>⚙️ Output do Workflow</h2>
+            <div class="progress-container" id="progressContainer">
+                <div style="font-weight: bold; color: #1e88e5; margin-bottom: 10px;">⏳ Aguardando Claude Code...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0% - Iniciando workflow...</div>
+            </div>
             <div class="output-area" id="outputArea">
                 <div class="log-line">
                     <span class="log-time">[Sistema]</span>
@@ -291,10 +327,82 @@
         }
 
         function requestNetworkMonitor() {
-            addLocalLog('📡 Network Monitor', 'Solicitando read_network_requests...', 'info');
-            addLocalLog('⏳ Aguardando', 'Claude Code vai executar o workflow', 'info');
-            console.log('%c🎯 NETWORK_MONITOR_REQUEST: Claude, execute read_network_requests nesta tab!',
-                'background: #1e88e5; color: white; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-size: 14px;');
+            // Mostrar indicador de progresso
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+
+            progressContainer.style.display = 'block';
+
+            addLocalLog('📡 Network Monitor', 'Comando gerado!', 'info');
+
+            // Simular progresso
+            let progress = 0;
+            const messages = [
+                '10% - Gerando comando...',
+                '25% - Comando pronto!',
+                '50% - Copie o comando abaixo',
+                '75% - Execute no Claude Code',
+                '90% - Aguarde resultado',
+                '100% - Pronto!'
+            ];
+
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress > 95) progress = 95;
+
+                const percent = Math.min(Math.floor(progress), 95);
+                const messageIndex = Math.floor(percent / 20);
+
+                progressFill.style.width = percent + '%';
+                progressText.textContent = messages[messageIndex] || 'Gerando...';
+
+                if (percent >= 95) {
+                    clearInterval(progressInterval);
+                }
+            }, 500);
+
+            // Log para o console
+            console.log('%c🎯 COMANDO GERADO:', 'background: #1e88e5; color: white; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-size: 14px;');
+            console.log('%cread_network_requests tabId=' + getCurrentTabId(), 'background: #f0f0f0; color: #333; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px;');
+
+            // Completar progresso
+            setTimeout(() => {
+                progressFill.style.width = '100%';
+                progressText.textContent = '100% - Comando pronto! Veja o console ou output abaixo';
+                progressText.style.color = '#27ae60';
+
+                // Mostrar comando na tela
+                showGeneratedCommand('read_network_requests tabId=' + getCurrentTabId());
+            }, 2000);
+        }
+
+        function getCurrentTabId() {
+            // Esta função tenta detectar o tabId atual
+            // O usuário pode precisar ajustar manualmente
+            return window.location.hash.replace('#', '') || 'TAB_ID_AQUI';
+        }
+
+        function showGeneratedCommand(command) {
+            const output = document.getElementById('outputArea');
+            const commandDiv = document.createElement('div');
+            commandDiv.style.cssText = `
+                background: #2c3e50;
+                color: #ecf0f1;
+                padding: 15px;
+                margin: 10px 0;
+                border-radius: 5px;
+                border-left: 4px solid #3498db;
+                font-family: monospace;
+                word-break: break-all;
+            `;
+            commandDiv.innerHTML = `
+                <strong>📋 Comando Gerado:</strong><br>
+                <code style="background: #34495e; padding: 5px 8px; border-radius: 3px; color: #2ecc71;">${command}</code><br><br>
+                <small>💡 Copie e cole no Claude Code para executar!</small>
+            `;
+            output.appendChild(commandDiv);
+            output.scrollTop = output.scrollHeight;
         }
 
         window.addEventListener('load', () => {
