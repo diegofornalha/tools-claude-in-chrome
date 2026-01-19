@@ -283,6 +283,48 @@
             resize: vertical;
         }
 
+        .history-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .history-question {
+            color: #333;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .history-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75em;
+            color: #666;
+        }
+
+        .history-timestamp {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .history-project {
+            color: #999;
+        }
+
         @media (max-width: 1200px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -294,7 +336,7 @@
     <div class="container">
         <header>
             <h1>🔧 Debugging Tools - MCP Real</h1>
-            <p class="subtitle">Fluxo Completo de Debug: Console + Network + JavaScript Executor</p>
+            <p class="subtitle">Fluxo Completo de Debug: Console + Network + JavaScript + History</p>
         </header>
 
         <div class="main-content">
@@ -303,7 +345,7 @@
                 <h2>📋 Workflows de Debug</h2>
 
                 <div class="info-box">
-                    ✓ Todos os 3 workflows usam <strong>ferramentas MCP reais</strong>!
+                    ✓ Todos os 4 workflows usam <strong>ferramentas MCP reais</strong>!
                 </div>
 
                 <!-- Workflow 1: Console Debug -->
@@ -413,6 +455,28 @@ Ex: window.location.href">document.title</textarea>
                         </button>
                     </div>
                 </div>
+
+                <!-- Workflow 4: History Reader -->
+                <div class="shortcut-item">
+                    <div class="shortcut-name">📚 4. History Reader</div>
+                    <div class="shortcut-description">
+                        • Carrega automaticamente o history.jsonl<br>
+                        • Exibe histórico de perguntas<br>
+                        • Mostra timestamps e projeto<br>
+                        • Use o botão "Limpar Histórico" para resetar
+                    </div>
+                    <div class="button-group">
+                        <button class="clear-btn" onclick="clearHistory()">
+                            🧹 Limpar Histórico
+                        </button>
+                    </div>
+
+                    <div class="history-section" id="historySection">
+                        <div style="text-align: center; color: #999; padding: 20px;">
+                            📂 Carregando histórico automaticamente...
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Painel de Output -->
@@ -440,7 +504,7 @@ Ex: window.location.href">document.title</textarea>
                         <span class="log-info"> 🎯 Aguardando execução de workflow...</span>
                     </div>
                     <div class="log-line">
-                        <span class="log-info">💡 Escolha um dos 3 workflows ao lado para começar</span>
+                        <span class="log-info">💡 Escolha um dos 4 workflows ao lado para começar</span>
                     </div>
                     <div class="log-line">
                         <span class="log-info">📋 Workflows disponíveis:</span>
@@ -453,6 +517,9 @@ Ex: window.location.href">document.title</textarea>
                     </div>
                     <div class="log-line">
                         <span class="log-info">   3. 💻 JavaScript Executor - javascript_tool</span>
+                    </div>
+                    <div class="log-line">
+                        <span class="log-info">   4. 📚 History Reader - history.jsonl</span>
                     </div>
                 </div>
             </div>
@@ -738,11 +805,108 @@ Ex: window.location.href">document.title</textarea>
             }, 30000);
         }
 
+        // ========== WORKFLOW 4: HISTORY READER ==========
+
+        async function loadHistoryFromServer() {
+            try {
+                addLocalLog('📚 History Reader', 'Carregando histórico automaticamente...', 'info');
+
+                const response = await fetch('http://localhost:3000/history.jsonl');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const text = await response.text();
+                const lines = text.trim().split('\n').filter(line => line.trim());
+
+                if (lines.length === 0) {
+                    addLocalLog('📚 Histórico vazio', 'Nenhuma entrada encontrada', 'warning');
+                    return;
+                }
+
+                const historySection = document.getElementById('historySection');
+                historySection.innerHTML = '';
+
+                lines.forEach((line, index) => {
+                    try {
+                        const entry = JSON.parse(line);
+                        displayHistoryItem(entry, index + 1);
+                    } catch (e) {
+                        console.error('Erro ao parsear linha:', line, e);
+                    }
+                });
+
+                addLocalLog('✓ Histórico carregado', `${lines.length} entradas encontradas`, 'success');
+
+            } catch (error) {
+                console.log('⚠️ Servidor não encontrado. Certifique-se que o servidor está rodando.');
+                console.error('Erro detalhado:', error);
+
+                // Mostrar erro na tela para debug
+                const historySection = document.getElementById('historySection');
+                historySection.innerHTML = `
+                    <div style="background: #ffebee; border-left: 4px solid #f44336; padding: 15px; border-radius: 5px; color: #c62828;">
+                        <strong>❌ Erro ao carregar histórico:</strong><br>
+                        ${error.message}<br><br>
+                        <small>💡 Certifique-se que o servidor está rodando em http://localhost:3000</small>
+                    </div>
+                `;
+            }
+        }
+
+        function displayHistoryItem(entry, index) {
+            const historySection = document.getElementById('historySection');
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'history-item';
+
+            // Converter timestamp para formato legível
+            const date = new Date(entry.timestamp);
+            const formattedDate = date.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            // Limpar display (remover aspas extras)
+            const displayText = entry.display.replace(/^'|'$/g, '');
+
+            itemDiv.innerHTML = `
+                <div class="history-question">
+                    <strong>${index}.</strong> ${displayText}
+                </div>
+                <div class="history-meta">
+                    <span class="history-timestamp">🕐 ${formattedDate}</span>
+                    <span class="history-project">📁 ${entry.project || 'N/A'}</span>
+                </div>
+            `;
+
+            historySection.appendChild(itemDiv);
+        }
+
+        function clearHistory() {
+            const historySection = document.getElementById('historySection');
+            historySection.innerHTML = `
+                <div style="text-align: center; color: #999; padding: 20px;">
+                    📂 Histórico limpo. Recarregue a página para carregar novamente.
+                </div>
+            `;
+            addLocalLog('🧹 Histórico limpo', 'Seção de histórico limpa', 'info');
+        }
+
         // ========== INICIALIZAÇÃO ==========
 
         window.addEventListener('load', () => {
             console.log('✓ Debugging Tools - Sistema inicializado');
-            addLocalLog('✓ Sistema iniciado', 'Todos os 3 workflows prontos para uso', 'success');
+            addLocalLog('✓ Sistema iniciado', 'Todos os 4 workflows prontos para uso', 'success');
+
+            console.log('🚀 Iniciando carregamento do histórico...');
+            // Carregar histórico automaticamente na inicialização
+            loadHistoryFromServer();
         });
 
         window.addEventListener('error', (e) => {
