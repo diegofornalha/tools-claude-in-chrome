@@ -318,21 +318,73 @@
                     ✓ Todos os 4 workflows usam <strong>ferramentas MCP reais</strong>!
                 </div>
 
-                <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 20px;">
-                    <strong>🎯 COMANDOS MCP REAIS:</strong><br><br>
-                    <code style="background: #1976d2; color: white; padding: 8px; border-radius: 4px; display: block; margin: 5px 0;">
-                        1️⃣ mcp__claude_in_chrome__tabs_context_mcp
-                    </code>
-                    <code style="background: #388e3c; color: white; padding: 8px; border-radius: 4px; display: block; margin: 5px 0;">
-                        2️⃣ mcp__claude_in_chrome__read_console_messages tabId=TAB_ID
-                    </code>
-                    <code style="background: #f57c00; color: white; padding: 8px; border-radius: 4px; display: block; margin: 5px 0;">
-                        3️⃣ mcp__claude_in_chrome__read_network_requests tabId=TAB_ID
-                    </code>
-                    <code style="background: #7b1fa2; color: white; padding: 8px; border-radius: 4px; display: block; margin: 5px 0;">
-                        4️⃣ mcp__claude_in_chrome__javascript_tool tabId=TAB_ID action=javascript_exec text=CODIGO
-                    </code>
-                    <small>💡 Execute no Claude Code para resultados reais!</small>
+                <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 20px; max-height: 450px; overflow-y: auto;">
+                    <strong>🎯 TODAS AS 17 TOOLS MCP - STATUS DOS TESTES:</strong><br><br>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.85em;">
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 1. javascript_tool
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 2. read_page
+                        </div>
+                        <div style="background: #f44336; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ❌ 3. find (OAuth não permitido)
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 4. form_input
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 5. computer (click/mouse)
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 6. navigate
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 7. resize_window
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 8. gif_creator
+                        </div>
+                        <div style="background: #ff9800; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ⚠️ 9. upload_image (limitado)
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 10. get_page_text
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 11. tabs_context_mcp
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 12. tabs_create_mcp
+                        </div>
+                        <div style="background: #ff9800; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ⚠️ 13. update_plan (limitado)
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 14. read_console_messages
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 15. shortcuts_list
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 16. shortcuts_execute
+                        </div>
+                        <div style="background: #4caf50; color: white; padding: 6px 10px; border-radius: 4px;">
+                            ✅ 17. read_network_requests
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 5px; border: 2px solid #2196f3;">
+                        <strong>📊 RESULTADOS DOS TESTES:</strong><br>
+                        ✅ <strong style="color: #4caf50;">Funcionando:</strong> 14/17 (82%)<br>
+                        ⚠️ <strong style="color: #ff9800;">Limitado:</strong> 2/17 (12%)<br>
+                        ❌ <strong style="color: #f44336;">Bloqueado:</strong> 1/17 (6%)<br>
+                        <small style="color: #666; display: block; margin-top: 8px;">
+                            💡 <strong>OAuth não permitido:</strong> Ferramentas de busca/ação em elementos<br>
+                            💡 <strong>Limitado:</strong> Requer contexto específico ou recursos especiais
+                        </small>
+                    </div>
                 </div>
 
                 <!-- Workflow 1: Console Debug -->

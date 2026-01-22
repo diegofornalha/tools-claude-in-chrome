@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Page Tool - Demonstração Completa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-box h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .example-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .example-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .example-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .example-card p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .test-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .test-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .result-area {
+            background: #f5f5f5;
+            border: 2px dashed #667eea;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            min-height: 50px;
+            color: #333;
+        }
+
+        .demo-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .demo-section h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 5px 0;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .parameters-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .parameters-table th,
+        .parameters-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .parameters-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .parameters-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        @media (max-width: 768px) {
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Read Page Tool - Demonstração Completa</h1>
+            <p>Leitura e análise de conteúdo de páginas web via MCP</p>
+        </header>
+
+        <!-- O que é -->
+        <div class="info-box">
+            <h2>📖 O que é Read Page Tool?</h2>
+            <p>
+                A <strong>read_page</strong> é uma ferramenta MCP (Model Context Protocol) que permite <strong>ler e analisar</strong> o conteúdo de páginas web abertas no Chrome. É uma das ferramentas mais essenciais para extração de dados e análise de páginas.
+            </p>
+            <div class="highlight">
+                <strong>💡 Em resumo:</strong> Permite que o Claude "veja" e interprete o conteúdo de páginas web, extraindo texto, elementos e estrutura!
+            </div>
+        </div>
+
+        <!-- Tipos de Leitura -->
+        <div class="info-box">
+            <h2>🔍 Tipos de Leitura Disponíveis</h2>
+            <p>A read_page oferece diferentes formas de ler páginas:</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div style="background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; border-radius: 5px;">
+                    <h3 style="color: #2e7d32; margin-bottom: 8px;">✅ all (Padrão)</h3>
+                    <p style="color: #333;">Retorna <strong>todos</strong> os elementos da página (texto, botões, links, etc.)</p>
+                </div>
+
+                <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; border-radius: 5px;">
+                    <h3 style="color: #1565c0; margin-bottom: 8px;">🎯 interactive</h3>
+                    <p style="color: #333;">Retorna <strong>somente elementos interativos</strong> (botões, inputs, links)</p>
+                </div>
+            </div>
+
+            <div style="background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; border-radius: 5px; margin-top: 15px;">
+                <h3 style="color: #e65100; margin-bottom: 8px;">ℹ️ Observação</h3>
+                <p style="color: #333;">Cada elemento tem <strong>ref_id</strong> único para referência em outras tools!</p>
+            </div>
+        </div>
+
+        <!-- Como funciona -->
+        <div class="info-box">
+            <h2>⚙️ Como Funciona?</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div>
+                    <h3 style="color: #667eea;">📡 Fluxo:</h3>
+                    <ol style="margin-left: 20px; line-height: 2;">
+                        <li>Claude recebe comando read_page</li>
+                        <li>Tool analisa página via Chrome DevTools</li>
+                        <li>Estrutura da página é extraída</li>
+                        <li>Elementos são identificados e indexados</li>
+                        <li>Dados estruturados são retornados</li>
+                    </ol>
+                </div>
+                <div>
+                    <h3 style="color: #667eea;">🔧 Tecnologias:</h3>
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li><strong>Chrome DevTools Protocol</strong></li>
+                        <li><strong>DOM Inspector API</strong></li>
+                        <li><strong>Accessibility Tree</strong></li>
+                        <li><strong>MCP Bridge</strong></li>
+                        <li><strong>Element Indexing</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parâmetros -->
+        <div class="info-box">
+            <h2>📋 Parâmetros</h2>
+            <table class="parameters-table">
+                <thead>
+                    <tr>
+                        <th>Parâmetro</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Obrigatório</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>tabId</code></td>
+                        <td>number</td>
+                        <td>ID da aba para ler</td>
+                        <td>✅ Sim</td>
+                    </tr>
+                    <tr>
+                        <td><code>filter</code></td>
+                        <td>string</td>
+                        <td>Filtro opcional: "all" ou "interactive"</td>
+                        <td>❌ Não (padrão: all)</td>
+                    </tr>
+                    <tr>
+                        <td><code>ref_id</code></td>
+                        <td>string</td>
+                        <td>Ler elemento específico por ID</td>
+                        <td>❌ Não</td>
+                    </tr>
+                    <tr>
+                        <td><code>depth</code></td>
+                        <td>number</td>
+                        <td>Profundidade da árvore (padrão: 15)</td>
+                        <td>❌ Não</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Exemplos -->
+        <div class="info-box">
+            <h2>💡 Exemplos Práticos</h2>
+            <div class="examples-grid">
+                <!-- Exemplo 1 -->
+                <div class="example-card">
+                    <h3>1. Ler Toda a Página</h3>
+                    <p>Capturar todos os elementos e texto</p>
+                    <div class="code-block">
+{
+  "action": "javascript_exec",
+  "tabId": 12345,
+  "text": "document.title"
+}
+                    </div>
+                    <button class="test-btn" onclick="testExample1()">Testar</button>
+                    <div class="result-area" id="result1"></div>
+                </div>
+
+                <!-- Exemplo 2 -->
+                <div class="example-card">
+                    <h3>2. Ler Apenas Interativos</h3>
+                    <p>Extrair só botões, inputs, links</p>
+                    <div class="code-block">
+{
+  "action": "javascript_exec",
+  "tabId": 12345,
+  "text": "document.querySelectorAll('button')"
+}
+                    </div>
+                    <button class="test-btn" onclick="testExample2()">Testar</button>
+                    <div class="result-area" id="result2"></div>
+                </div>
+
+                <!-- Exemplo 3 -->
+                <div class="example-card">
+                    <h3>3. Ler por Elemento Específico</h3>
+                    <p>Obter conteúdo de elemento por ID</p>
+                    <div class="code-block">
+{
+  "action": "javascript_exec",
+  "tabId": 12345,
+  "text": "document.getElementById('meu-elemento')"
+}
+                    </div>
+                    <button class="test-btn" onclick="testExample3()">Testar</button>
+                    <div class="result-area" id="result3"></div>
+                </div>
+
+                <!-- Exemplo 4 -->
+                <div class="example-card">
+                    <h3>4. Ler Texto da Página</h3>
+                    <p>Extrair todo texto visível</p>
+                    <div class="code-block">
+{
+  "action": "javascript_exec",
+  "tabId": 12345,
+  "text": "document.body.innerText"
+}
+                    </div>
+                    <button class="test-btn" onclick="testExample4()">Testar</button>
+                    <div class="result-area" id="result4"></div>
+                </div>
+
+                <!-- Exemplo 5 -->
+                <div class="example-card">
+                    <h3>5. Ler Links</h3>
+                    <p>Extrair todos os hyperlinks</p>
+                    <div class="code-block">
+{
+  "action": "javascript_exec",
+  "tabId": 12345,
+  "text": "Array.from(document.querySelectorAll('a')).map(a => ({text: a.innerText, href: a.href}))"
+}
+                    </div>
+                    <button class="test-btn" onclick="testExample5()">Testar</button>
+                    <div class="result-area" id="result5"></div>
+                </div>
+
+                <!-- Exemplo 6 -->
+                <div class="example-card">
+                    <h3>6. Ler Metadados</h3>
+                    <p>Obter título, descrição, etc.</p>
+                    <div class="code-block">
+{
+  "action": "javascript_exec",
+  "tabId": 12345,
+  "text": "({title: document.title, url: window.location.href, description: document.querySelector('meta[name=\"description\"]')?.content})"
+}
+                    </div>
+                    <button class="test-btn" onclick="testExample6()">Testar</button>
+                    <div class="result-area" id="result6"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demonstração Interativa -->
+        <div class="demo-section">
+            <h3>🎮 Demonstração Interativa</h3>
+            <p>Digite um seletor CSS para ler elementos:</p>
+            <input type="text" id="cssSelector" placeholder="Ex: h1, #id, .classe, button, a[href]">
+            <button onclick="executeRead()">🔍 Ler Elementos</button>
+            <button onclick="clearResult()">🧹 Limpar</button>
+            <div class="result-area" id="interactiveResult" style="margin-top: 15px;"></div>
+        </div>
+
+        <!-- Casos de Uso -->
+        <div class="info-box">
+            <h2>🎯 Casos de Uso Comuns</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div>
+                    <h3 style="color: #667eea;">🔍 Web Scraping</h3>
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>Extrair dados de páginas</li>
+                        <li>Coletar informações de produtos</li>
+                        <li>Monitorar conteúdo dinâmico</li>
+                        <li>Analisar estrutura de sites</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: #667eea;">📊 Análise</h3>
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>Verificar elementos da página</li>
+                        <li>Contar componentes</li>
+                        <li>Validar estrutura HTML</li>
+                        <li>Diagnosticar problemas de layout</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: #667eea;">🧪 Testes</h3>
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>Verificar se elemento existe</li>
+                        <li>Validar conteúdo</li>
+                        <li>Testar navegação</li>
+                        <li>Confirmar carregamento</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: #667eea;">📝 Documentação</h3>
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>Gerar documentação automática</li>
+                        <li>Mapear estrutura de sites</li>
+                        <li>Criar guias de interface</li>
+                        <li>Catalogar elementos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Limitações -->
+        <div class="info-box">
+            <h2>⚠️ Limitações</h2>
+            <ul style="margin-left: 20px; line-height: 2;">
+                <li><strong>Contexto:</strong> Só lê a página atual (não navega)</li>
+                <li><strong>JavaScript:</strong> Não executa JS (só lê HTML/DOM)</li>
+                <li><strong>Acesso:</strong> Elementos visíveis apenas (DOM renderizado)</li>
+                <li><strong>Conteúdo dinâmico:</strong> Pode não capturar conteúdo carregado via AJAX</li>
+                <li><strong>Páginas protegidas:</strong> Conteúdo bloqueado pode não estar disponível</li>
+            </ul>
+        </div>
+
+        <!-- Comandos MCP -->
+        <div class="info-box">
+            <h2>📝 Comando MCP</h2>
+            <div class="code-block" style="font-size: 1.1em;">
+mcp__claude_in_chrome__read_page tabId=12345
+            </div>
+            <div class="code-block" style="font-size: 1em; margin-top: 10px;">
+# Com filtro (apenas interativos)
+mcp__claude_in_chrome__read_page tabId=12345 filter=interactive
+            </div>
+            <div class="highlight">
+                <strong>💡 Dica:</strong> Combine com outras tools! Use <code>read_page</code> para ver elementos, depois <code>computer</code> para clicar!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function testExample1() {
+            const result = "Leitura completa da página seria executada aqui via MCP";
+            document.getElementById('result1').innerHTML = `<strong>Resultado:</strong> ${result}`;
+        }
+
+        function testExample2() {
+            const result = "Elementos interativos: buttons, inputs, links, etc.";
+            document.getElementById('result2').innerHTML = `<strong>Resultado:</strong> ${result}`;
+        }
+
+        function testExample3() {
+            const result = "Elemento específico por ID";
+            document.getElementById('result3').innerHTML = `<strong>Resultado:</strong> ${result}`;
+        }
+
+        function testExample4() {
+            const result = "Texto completo da página";
+            document.getElementById('result4').innerHTML = `<strong>Resultado:</strong> ${result}`;
+        }
+
+        function testExample5() {
+            const result = "Array de links com texto e URLs";
+            document.getElementById('result5').innerHTML = `<strong>Resultado:</strong> ${result}`;
+        }
+
+        function testExample6() {
+            const result = "Metadados: título, URL, descrição";
+            document.getElementById('result6').innerHTML = `<strong>Resultado:</strong> ${result}`;
+        }
+
+        function executeRead() {
+            const selector = document.getElementById('cssSelector').value;
+            const result = document.getElementById('interactiveResult');
+            result.innerHTML = `<strong>Lendo seletor:</strong> ${selector}<br><pre style="margin-top: 10px;">Em ambiente MCP real, seria executado:</pre><code>read_page tabId=12345 filter=${selector}</code>`;
+        }
+
+        function clearResult() {
+            document.getElementById('interactiveResult').innerHTML = '';
+            document.getElementById('cssSelector').value = '';
+        }
+    </script>
+</body>
+</html>
